@@ -2,12 +2,20 @@
 #include "objplane.hpp"
 #include <cmath>
 
-qbRT::ObjPlane::ObjPlane ()
+// The default constructor.
+qbRT::ObjPlane::ObjPlane()
 {
-
+	// Define the default uv mapping.
+	m_uvMapType = qbRT::uvPLANE;
+	
+	// Construct the default bounding box.
+	m_boundingBoxTransform.SetTransform(qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
+										qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
+										qbVector<double>{std::vector<double>{1.0, 1.0, 0.01}});
 }
-   
-qbRT:: ObjPlane ::~ObjPlane ()
+
+// The destructor.
+qbRT::ObjPlane::~ObjPlane()
 {
 
 }
@@ -15,6 +23,9 @@ qbRT:: ObjPlane ::~ObjPlane ()
 // The function to test for intersections.
 bool qbRT::ObjPlane::TestIntersection(	const qbRT::Ray &castRay, qbRT::DATA::hitData &hitData)
 {
+	if (!m_isVisible)
+		return false;
+		
 	// Copy the ray and apply the backwards transform.
 	qbRT::Ray bckRay = m_transformMatrix.Apply(castRay, qbRT::BCKTFORM);
 	
@@ -46,6 +57,12 @@ bool qbRT::ObjPlane::TestIntersection(	const qbRT::Ray &castRay, qbRT::DATA::hit
 				
 				// Transform the intersection point back into world coordinates.
 				hitData.poi = m_transformMatrix.Apply(poi, qbRT::FWDTFORM);
+				
+				// Compute the local normal.
+				//qbVector<double> localOrigin {std::vector<double> {0.0, 0.0, 0.0}};
+				//qbVector<double> globalOrigin = m_transformMatrix.Apply(localOrigin, qbRT::FWDTFORM);
+				//localNormal = m_transformMatrix.Apply(normalVector, qbRT::FWDTFORM) - globalOrigin;
+				//localNormal.Normalize();
 								
 				qbVector<double> normalVector {std::vector<double> {0.0, 0.0, -1.0}};
 				hitData.normal = m_transformMatrix.ApplyNorm(normalVector);
@@ -54,17 +71,15 @@ bool qbRT::ObjPlane::TestIntersection(	const qbRT::Ray &castRay, qbRT::DATA::hit
 				// Return the base color.
 				hitData.color = m_baseColor;
 				
-				// Return the local point of intersection.
-				hitData.localPOI = poi;				
-				
-				// Compute the UV coordinates.
+				// Store the (u,v) coordinates for possible later use.
 				//m_uvCoords.SetElement(0, u);
 				//m_uvCoords.SetElement(1, v);
-				ComputeUV(poi, hitData.uvCoords);
+				ComputeUV(poi, m_uvCoords);
 				hitData.uvCoords = m_uvCoords;
 				
 				// Return a reference to this object.
-				hitData.hitObject = std::make_shared<qbRT::ObjectBase> (*this);
+				//hitData.hitObject = std::make_shared<qbRT::ObjectBase> (*this);	
+				hitData.hitObject = this -> shared_from_this();
 				
 				return true;
 			}

@@ -9,7 +9,7 @@
 
 namespace qbRT
 {
-	class ObjSphere : public ObjectBase
+	class ObjSphere : public ObjectBase, public std::enable_shared_from_this<qbRT::ObjSphere>
 	{
 		public:
 			/* The default constructor.
@@ -20,6 +20,7 @@ namespace qbRT
 			virtual ~ObjSphere() override;
 			
 			// Override the function to test for intersections.
+			//virtual bool TestIntersection(const qbRT::Ray &castRay, qbVector<double> &intPoint, qbVector<double> &localNormal, qbVector<double> &localColor) override;
 			virtual bool TestIntersection(const qbRT::Ray &castRay, qbRT::DATA::hitData &hitData) override;
 			
 		private:
