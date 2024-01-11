@@ -9,7 +9,7 @@
 
 namespace qbRT
 {
-	class ObjSphere : public ObjectBase, public std::enable_shared_from_this<qbRT::ObjSphere>
+	class ObjSphere : public ObjectBase
 	{
 		public:
 			/* The default constructor.

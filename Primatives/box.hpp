@@ -7,7 +7,7 @@
 
 namespace qbRT
 {
-	class Box : public ObjectBase, public std::enable_shared_from_this<qbRT::Box>
+	class Box : public ObjectBase
 	{
 		public:
 			/* The default constructor.

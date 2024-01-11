@@ -10,7 +10,7 @@
 
 namespace qbRT
 {
-	class Cone : public ObjectBase, public std::enable_shared_from_this<qbRT::Cone>
+	class Cone : public ObjectBase
 	{
 		public:
 			// Default constructor.

@@ -18,6 +18,7 @@
 #include "./Normals/simplerough.hpp"
 #include "./Normals/texturenormal.hpp"
 #include "./Normals/image.hpp"
+#include "./Primatives/compositebase.hpp"
 
 namespace qbRT
 {
@@ -31,8 +32,9 @@ namespace qbRT
 			bool Render(qbImage &outputImage);
 
 			// Function to cast a ray into the scene.
-			bool CastRay(	qbRT::Ray &castRay, std::shared_ptr<qbRT::ObjectBase> &closestObject,
-										qbRT::DATA::hitData &closestHitData);
+			bool CastRay(qbRT::Ray &castRay, 
+			             std::shared_ptr<qbRT::ObjectBase> &closestObject,
+						 qbRT::DATA::hitData &closestHitData);
 			
 		// Private functions.
 		private:

@@ -10,7 +10,7 @@
 
 namespace qbRT
 {
-	class Cylinder : public ObjectBase, public std::enable_shared_from_this<qbRT::Cylinder>
+	class Cylinder : public ObjectBase
 	{
 		public:
 			// Default constructor.

@@ -24,18 +24,6 @@ qbRT::Scene::Scene()
 	m_camera.SetLength(3.0);
 	m_camera.SetAspect(16.0 / 9.0);
 	m_camera.UpdateCameraGeometry();	
-
-    //m_camera.SetPosition(qbVector<double>{std::vector<double> {2.0, -5.0, -1.0}});
-	//m_camera.SetPosition( qbVector<double>{std::vector<double> {-3.0, -5.0, -2.0}});
-	//m_camera.SetLookAt(qbVector<double>{std::vector<double> {-0.5, 0.0, 0.0}});
-	//m_camera.SetUp(qbVector<double>{std::vector<double> {0.0, 0.0, 1.0}});
-	//m_camera.SetHorzSize(0.25);
-	//m_camera.SetHorzSize(0.85);
-	//m_camera.SetHorzSize(1.0);
-	//m_camera.SetLength(3.0);
-	//m_camera.SetAspect(16.0 / 9.0);
-	//m_camera.SetAspect(1.0);
-	//m_camera.UpdateCameraGeometry();
 	
 	// **************************************************************************************
 	// Setup ambient lightling.
@@ -65,10 +53,9 @@ qbRT::Scene::Scene()
 	// **************************************************************************************
 	// Create the textures.
 	// **************************************************************************************	
-	// The spay image texture.
-	auto sprayTexture = std::make_shared<qbRT::Texture::Image> (qbRT::Texture::Image());
-	sprayTexture -> LoadImage("C:/git/pic-bmp/7593526.bmp");
-	sprayTexture -> SetTransform(	qbVector<double>{std::vector<double>{0.0, 0.0}},
+	auto Texture = std::make_shared<qbRT::Texture::Image> (qbRT::Texture::Image());
+	Texture -> LoadImage("C:/git/pic-bmp/7593526.bmp");
+	Texture -> SetTransform(	qbVector<double>{std::vector<double>{0.0, 0.0}},
 																0.0,
 																qbVector<double>{std::vector<double>{1.0, 1.0}} );
 
@@ -156,11 +143,11 @@ qbRT::Scene::Scene()
 	floorMaterial -> m_shininess = 0.0;
 	floorMaterial -> AssignTexture(floorTexture);
 	
-	auto sprayBodyMat = std::make_shared<qbRT::SimpleMaterial> (qbRT::SimpleMaterial());
-	sprayBodyMat -> m_baseColor = qbVector<double>{std::vector<double>{1.0, 1.0, 1.0}};
-	sprayBodyMat -> m_reflectivity = 0.1;
-	sprayBodyMat -> m_shininess = 16.0;;
-	sprayBodyMat -> AssignTexture(sprayTexture);
+	auto BodyMat = std::make_shared<qbRT::SimpleMaterial> (qbRT::SimpleMaterial());
+	BodyMat -> m_baseColor = qbVector<double>{std::vector<double>{1.0, 1.0, 1.0}};
+	BodyMat -> m_reflectivity = 0.1;
+	BodyMat -> m_shininess = 16.0;;
+	BodyMat -> AssignTexture(Texture);
 
 	auto sphereBodyMat = std::make_shared<qbRT::SimpleMaterial> (qbRT::SimpleMaterial());
 	sphereBodyMat -> m_baseColor = qbVector<double>{std::vector<double>{1.0, 1.0, 1.0}};
@@ -218,8 +205,8 @@ qbRT::Scene::Scene()
 	floor -> m_tag = "floor";
 	floor -> m_isVisible = true;
 	floor -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{0.0, 0.0, 0.5}},
-																							qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
-																							qbVector<double>{std::vector<double>{6.0, 6.0, 1.0}}}	);	
+												qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
+												qbVector<double>{std::vector<double>{6.0, 6.0, 1.0}}}	);	
 	floor -> AssignMaterial(floorMaterial);	
 	floor -> m_uvMapType = qbRT::uvPLANE;
 	
@@ -234,36 +221,82 @@ qbRT::Scene::Scene()
 	auto sideWall = std::make_shared<qbRT::ObjPlane> (*backWall);
 	sideWall -> m_tag = "sideWall";
 	sideWall -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{-2.0, 0.0, 0.0}},
-																								qbVector<double>{std::vector<double>{-M_PI/2.0, -M_PI/2.0, 0.0}},
-																								qbVector<double>{std::vector<double>{4.0, 4.0, 1.0}}}	);	
+													qbVector<double>{std::vector<double>{-M_PI/2.0, -M_PI/2.0, 0.0}},
+													qbVector<double>{std::vector<double>{4.0, 4.0, 1.0}}}	);	
 	sideWall -> AssignMaterial(mirrorMat2);
 	
-	double sprayX = 1.0;
-	double sprayY = -1.5;	
+	//double sprayX = 1.0;
+	//double sprayY = -1.5;	
+	double sprayX = 0.0;
+	double sprayY = 0.0;
 	auto penBody = std::make_shared<qbRT::Cylinder> (qbRT::Cylinder());
 	penBody -> m_tag = "penBody";
 	penBody -> m_isVisible = true;
-	penBody -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{sprayX, sprayY, -0.5}},
-													qbVector<double>{std::vector<double>{0.0, 0.0, M_PI/5.0}},
-													qbVector<double>{std::vector<double>{0.1, 0.1, 1.0}}}	);
-	penBody -> AssignMaterial(sprayBodyMat);
+	penBody -> SetTransformMatrix(qbRT::GTform {qbVector<double>{std::vector<double>{sprayX, sprayY, -0.5}},
+												qbVector<double>{std::vector<double>{0.0, 0.0, M_PI/5.0}},
+												qbVector<double>{std::vector<double>{0.1, 0.1, 1.0}}});
+	penBody -> AssignMaterial(BodyMat);
 	penBody -> m_uvMapType = qbRT::uvCYLINDER;
 	
 	auto penTopCone = std::make_shared<qbRT::Cone> (qbRT::Cone());
 	penTopCone -> m_tag = "penTopCone";
 	penTopCone -> m_isVisible = true;
-	penTopCone -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{sprayX, sprayY, -2.0}},
-														qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
-														qbVector<double>{std::vector<double>{0.03, 0.03, 0.11}}}	);
+	penTopCone -> SetTransformMatrix(qbRT::GTform {qbVector<double>{std::vector<double>{sprayX, sprayY, -2.0}},
+												   qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
+												   qbVector<double>{std::vector<double>{0.03, 0.03, 0.11}}});
 	penTopCone -> AssignMaterial(metalMat);
 	
 	auto penTop = std::make_shared<qbRT::Cone> (*penTopCone);
 	penTop -> m_tag = "penTop";
 	penTop -> m_isVisible = true;
-	penTop -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{sprayX, sprayY, -2.0}},
-												    qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
-													qbVector<double>{std::vector<double>{0.1, 0.1, 0.5}}}	);
+	penTop -> SetTransformMatrix(qbRT::GTform {qbVector<double>{std::vector<double>{sprayX, sprayY, -2.0}},
+											   qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
+											   qbVector<double>{std::vector<double>{0.1, 0.1, 0.5}}});
 	penTop -> AssignMaterial(plasticMat);
+
+	/*double sprayX = 0.0;
+	double sprayY = 0.0;
+	auto sprayBody = std::make_shared<qbRT::Cylinder> (qbRT::Cylinder());
+	sprayBody -> m_tag = "sprayBody";
+	sprayBody -> m_isVisible = true;
+	sprayBody -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{sprayX, sprayY, -0.5}},
+																									qbVector<double>{std::vector<double>{0.0, 0.0, M_PI/5.0}},
+																									qbVector<double>{std::vector<double>{0.4, 0.4, 1.0}}}	);
+	sprayBody -> AssignMaterial(BodyMat);
+	sprayBody -> m_uvMapType = qbRT::uvCYLINDER;
+	
+	auto sprayTopCone = std::make_shared<qbRT::Cone> (qbRT::Cone());
+	sprayTopCone -> m_tag = "sprayTopCone";
+	sprayTopCone -> m_isVisible = true;
+	sprayTopCone -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{sprayX, sprayY, -2.0}},
+																										qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
+																										qbVector<double>{std::vector<double>{0.4, 0.4, 0.5}}}	);
+	sprayTopCone -> AssignMaterial(metalMat);
+	
+	auto sprayTop = std::make_shared<qbRT::Cylinder> (qbRT::Cylinder());
+	sprayTop -> m_tag = "sprayTop";
+	sprayTop -> m_isVisible = true;
+	sprayTop -> SetTransformMatrix(qbRT::GTform {	qbVector<double>{std::vector<double>{sprayX, sprayY, -1.5}},
+																								qbVector<double>{std::vector<double>{0.0, 0.0, 0.0}},
+																								qbVector<double>{std::vector<double>{0.2, 0.2, 0.5}}}	);
+	sprayTop -> AssignMaterial(plasticMat);*/
+
+	auto pen = std::make_shared<qbRT::SHAPES::CompositeBase> (qbRT::SHAPES::CompositeBase());
+	pen -> m_tag = "pen";
+	pen -> m_isVisible = true;
+	//pen -> AddSubShape(sprayBody);
+	//pen -> AddSubShape(sprayTopCone);
+	//pen -> AddSubShape(sprayTop);
+	pen -> AddSubShape(penBody);
+	pen -> AddSubShape(penTopCone);
+	pen -> AddSubShape(penTop);
+	pen -> SetTransformMatrix(qbRT::GTform{qbVector<double>{std::vector<double>{1.0, -1.75, 0.0}},
+	                                       qbVector<double>{std::vector<double>{0.0, -M_PI/4.0, 0.0}},
+										   qbVector<double>{std::vector<double>{1.0, 1.0, 1.0}}});
+
+	//penBody -> SetTransformMatrix(qbRT::GTform {qbVector<double>{std::vector<double>{sprayX, sprayY, -0.5}},
+	//											qbVector<double>{std::vector<double>{0.0, 0.0, M_PI/5.0}},
+	//											qbVector<double>{std::vector<double>{0.1, 0.1, 1.0}}});
 	
 	auto box = std::make_shared<qbRT::Box> (qbRT::Box());
 	box -> m_tag = "box";
@@ -304,9 +337,10 @@ qbRT::Scene::Scene()
 	// **************************************************************************************
 	// Put the objects into the scene.	
 	// **************************************************************************************
-	m_objectList.push_back(penBody);
-	m_objectList.push_back(penTopCone);
-	m_objectList.push_back(penTop);
+	//m_objectList.push_back(penBody);
+	//m_objectList.push_back(penTopCone);
+	//m_objectList.push_back(penTop);
+	m_objectList.push_back(pen);
 	m_objectList.push_back(box);
 	m_objectList.push_back(box2);	
 	m_objectList.push_back(box3);

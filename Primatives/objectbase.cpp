@@ -3,7 +3,7 @@
 
 //#define EPSILON 1e-21f;
 
-define EPSILON 1e-6f;
+#define EPSILON 1e-6f;
 
 // Default constructor.
 qbRT::ObjectBase::ObjectBase()
